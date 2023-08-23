@@ -1,2 +1,6 @@
 venv/
 .idea/
+__pycache__/
+api/handlers/__pycache__/
+api/models/__pycache__/
+database/__pycache__/
