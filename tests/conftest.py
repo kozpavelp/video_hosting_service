@@ -80,7 +80,7 @@ async def asyncpg_pool():
 async def get_user_from_db(asyncpg_pool):
 
     async def get_user_by_uuid(user_id: str):
-        async with asyncpg_pool.aquire() as conn:
+        async with asyncpg_pool.acquire() as conn:
             return await conn.fetch('SELECT * FROM users WHERE user_id = $1;', user_id)
 
     return get_user_by_uuid
