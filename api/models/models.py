@@ -3,7 +3,7 @@ import re
 import uuid
 
 from fastapi import HTTPException
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, validator
 
 
 LETTER_MATCH = re.compile(r"^[а-яА-Яa-zA-Z\-]+$")
@@ -28,7 +28,7 @@ class UserCreate(BaseModel):
     surname: str
     email: EmailStr
 
-    @field_validator('name')
+    @validator('name')
     def validate_name(cls, value):
         if not LETTER_MATCH.match(value):
             HTTPException(
@@ -36,7 +36,7 @@ class UserCreate(BaseModel):
             )
         return value
 
-    @field_validator('surname')
+    @validator('surname')
     def validate_surname(cls, value):
         if not LETTER_MATCH.match(value):
             HTTPException(
