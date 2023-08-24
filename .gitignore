@@ -4,3 +4,6 @@ __pycache__/
 api/handlers/__pycache__/
 api/models/__pycache__/
 database/__pycache__/
+tests/alembic.ini
+tests/migrations/
+tests/.pytest_cache/
