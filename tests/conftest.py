@@ -84,3 +84,13 @@ async def get_user_from_db(asyncpg_pool):
             return await conn.fetch('SELECT * FROM users WHERE user_id = $1;', user_id)
 
     return get_user_by_uuid
+
+
+@pytest.fixture
+async def create_user_in_db(asyncpg_pool):
+    async def create_user_in_db(user_id: str, name: str, surname: str, email: str, is_active: bool):
+        async with asyncpg_pool.acquire() as conn:
+            return await conn.execute('INSERT INTO users VALUES ($1, $2, $3, $4, $5)',
+                                      user_id, name, surname, email, is_active)
+
+    return create_user_in_db
