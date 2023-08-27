@@ -7,3 +7,8 @@ database/__pycache__/
 tests/alembic.ini
 tests/migrations/
 tests/.pytest_cache/
+tests/test_handlers/migrations
+tests/alembic.ini
+tests/migrations
+tests/test_handlers/alembic.ini
+migrations/

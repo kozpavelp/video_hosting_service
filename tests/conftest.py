@@ -14,10 +14,6 @@ from app import app
 from database.session import get_db
 
 
-test_engine = create_async_engine(config.TEST_DB_URL, future=True, echo=True)
-
-test_async_session = sessionmaker(test_engine, expire_on_commit=False, class_=AsyncSession)
-
 CLEAN_TABLES = [
     'users'
 ]
@@ -56,6 +52,8 @@ async def clean_tables(async_session_test):
 
 async def _get_test_db():
     try:
+        test_engine = create_async_engine(config.TEST_DB_URL, future=True, echo=True)
+        test_async_session = sessionmaker(test_engine, expire_on_commit=False, class_=AsyncSession)
         yield test_async_session()
     finally:
         pass
