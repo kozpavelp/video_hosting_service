@@ -1,11 +1,13 @@
 """Модуль валидации"""
 import re
 import uuid
-
 from typing import Optional
 
 from fastapi import HTTPException
-from pydantic import BaseModel, EmailStr, validator, constr
+from pydantic import BaseModel
+from pydantic import constr
+from pydantic import EmailStr
+from pydantic import validator
 
 
 LETTER_MATCH = re.compile(r"^[а-яА-Яa-zA-Z\-]+$")
@@ -14,6 +16,7 @@ LETTER_MATCH = re.compile(r"^[а-яА-Яa-zA-Z\-]+$")
 class TunedModel(BaseModel):
     class Config:
         """Convert everything to json"""
+
         from_attributes = True
 
 
@@ -30,16 +33,16 @@ class UserCreate(BaseModel):
     surname: str
     email: EmailStr
 
-    @validator('name')
+    @validator("name")
     def validate_name(cls, value):
         if not LETTER_MATCH.match(value):
-            HTTPException(status_code=422, detail='Имя должно состоять из букв')
+            HTTPException(status_code=422, detail="Имя должно состоять из букв")
         return value
 
-    @validator('surname')
+    @validator("surname")
     def validate_surname(cls, value):
         if not LETTER_MATCH.match(value):
-            HTTPException(status_code=422, detail='Фамилия должна состоять из букв')
+            HTTPException(status_code=422, detail="Фамилия должна состоять из букв")
         return value
 
 
@@ -56,14 +59,16 @@ class UpdatedUserReq(BaseModel):
     surname: Optional[constr(min_length=1)]
     email: Optional[EmailStr]
 
-    @validator('name')
+    @validator("name")
     def validate_name(cls, value):
         if not LETTER_MATCH.match(value):
-            raise HTTPException(status_code=422, detail='Имя должно состоять из букв')
+            raise HTTPException(status_code=422, detail="Имя должно состоять из букв")
         return value
 
-    @validator('surname')
+    @validator("surname")
     def validate_surname(cls, value):
         if not LETTER_MATCH.match(value):
-            raise HTTPException(status_code=422, detail='Фамилия должна состоять из букв')
+            raise HTTPException(
+                status_code=422, detail="Фамилия должна состоять из букв"
+            )
         return value
