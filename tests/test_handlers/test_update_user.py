@@ -9,8 +9,14 @@ async def test_update_users(client, create_user_in_db, get_user_from_db):
         "surname": "Kozl",
         "email": "kozpavelp@gmail.com",
         "is_active": True,
+        "password": "TestPwd1",
     }
-    updated_user_data = {"name": "Jora", "surname": "lavash", "email": "punk@srenk.com"}
+    updated_user_data = {
+        "name": "Jora",
+        "surname": "lavash",
+        "email": "punk@srenk.com",
+        "hashed_pwd": "TestPwd1",
+    }
     await create_user_in_db(**user_data)
     resp = client.patch(
         f'/user/?user_id={user_data["user_id"]}', data=json.dumps(updated_user_data)
@@ -35,6 +41,7 @@ async def test_update_one(client, create_user_in_db, get_user_from_db):
             "surname": "Kozl",
             "email": "kozpavelp@gmail.com",
             "is_active": True,
+            "password": "TestPwd1",
         },
         {
             "user_id": uuid4(),
@@ -42,6 +49,7 @@ async def test_update_one(client, create_user_in_db, get_user_from_db):
             "surname": "Assas",
             "email": "Isas@gmail.kz",
             "is_active": True,
+            "password": "TestPwd1",
         },
         {
             "user_id": uuid4(),
@@ -49,6 +57,7 @@ async def test_update_one(client, create_user_in_db, get_user_from_db):
             "surname": "Kofta",
             "email": "ponko@ya.com",
             "is_active": True,
+            "password": "TestPwd1",
         },
     ]
     data_to_update = {
@@ -107,6 +116,7 @@ async def test_update_user_duplicate_email(client, create_user_in_db):
             "surname": "Kozl",
             "email": "kozpavelp@gmail.com",
             "is_active": True,
+            "password": "TestPwd1",
         },
         {
             "user_id": uuid4(),
@@ -114,6 +124,7 @@ async def test_update_user_duplicate_email(client, create_user_in_db):
             "surname": "Assas",
             "email": "Isas@gmail.kz",
             "is_active": True,
+            "password": "TestPwd1",
         },
     ]
     email_to_update = {"email": users_to_add[1]["email"]}

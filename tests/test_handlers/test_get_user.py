@@ -8,6 +8,7 @@ async def test_get_user(client, create_user_in_db, get_user_from_db):
         "surname": "Kozl",
         "email": "kozpavelp@gmail.com",
         "is_active": True,
+        "password": "TestPwd1",
     }
     await create_user_in_db(**user_data)
     resp = client.get(f'/user/?user_id={user_data["user_id"]}')
@@ -27,6 +28,7 @@ async def test_get_user_not_found(client, create_user_in_db, get_user_from_db):
         "surname": "Kozl",
         "email": "kozpavelp@gmail.com",
         "is_active": True,
+        "password": "TestPwd1",
     }
     await create_user_in_db(**user_data)
     id_to_find = uuid4()

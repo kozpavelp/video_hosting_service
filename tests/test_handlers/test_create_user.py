@@ -2,7 +2,12 @@ import json
 
 
 async def test_create_user(client, get_user_from_db):
-    user_data = {"name": "Pavel", "surname": "Kozl", "email": "kozpavelp@gmail.com"}
+    user_data = {
+        "name": "Pavel",
+        "surname": "Kozl",
+        "email": "kozpavelp@gmail.com",
+        "password": "TestPwd1",
+    }
     resp = client.post("/user/", data=json.dumps(user_data))
     resp_json = resp.json()
     assert resp.status_code == 200
@@ -21,8 +26,18 @@ async def test_create_user(client, get_user_from_db):
 
 
 async def test_create_duplicate_email(client, get_user_from_db):
-    user_data = {"name": "Punk", "surname": "Srenk", "email": "puk@srenk.kz"}
-    user_data_same = {"name": "Poncho", "surname": "Kofta", "email": "puk@srenk.kz"}
+    user_data = {
+        "name": "Punk",
+        "surname": "Srenk",
+        "email": "puk@srenk.kz",
+        "password": "TestPwd1",
+    }
+    user_data_same = {
+        "name": "Poncho",
+        "surname": "Kofta",
+        "email": "puk@srenk.kz",
+        "password": "TestPwd1",
+    }
     resp = client.post("/user/", data=json.dumps(user_data))
     resp_json = resp.json()
     assert resp.status_code == 200

@@ -32,6 +32,7 @@ class UserCreate(BaseModel):
     name: str
     surname: str
     email: EmailStr
+    password: str
 
     @validator("name")
     def validate_name(cls, value):
@@ -72,3 +73,8 @@ class UpdatedUserReq(BaseModel):
                 status_code=422, detail="Фамилия должна состоять из букв"
             )
         return value
+
+
+class Token(BaseModel):
+    access_token: str
+    type_token: str
