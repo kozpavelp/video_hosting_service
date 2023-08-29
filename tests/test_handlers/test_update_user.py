@@ -15,7 +15,7 @@ async def test_update_users(client, create_user_in_db, get_user_from_db):
         "name": "Jora",
         "surname": "lavash",
         "email": "punk@srenk.com",
-        "hashed_pwd": "TestPwd1",
+        "password": "TestPwd1",
     }
     await create_user_in_db(**user_data)
     resp = client.patch(

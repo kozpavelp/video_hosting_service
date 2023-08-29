@@ -1,5 +1,4 @@
 from datetime import timedelta
-from typing import Union
 
 from fastapi import APIRouter
 from fastapi import Depends
@@ -12,43 +11,16 @@ from jose import JWTError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 import config
+from api.handlers.actions.auth import _get_user_by_email
+from api.handlers.actions.auth import authenticate_user
 from api.models.models import Token
-from database.dals import UserDAL
 from database.models import User
 from database.session import get_db
-from hashing import Hasher
 from security import create_access_token
 
 login_router = APIRouter()
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
-
-
-async def _get_user_by_email(email: str, db):
-    async with db as session:
-        async with session.begin():
-            user_dal = UserDAL(session)
-            return await user_dal.get_user_by_email(email=email)
-
-
-async def verify_pwd(email: str, password: str, db: AsyncSession):
-    user = await _get_user_by_email(email, db=db)
-    if user in None:
-        return False
-    if not Hasher.verify_pwd(password, user.hashed_pwd):
-        return False
-    return user
-
-
-async def authenticate_user(
-    email: str, password: str, db: AsyncSession
-) -> Union[User, None]:
-    user = await _get_user_by_email(email, db)
-    if user is None:
-        return
-    if not Hasher.verify_pwd(password, user.hashed_pwd):
-        return
-    return user
 
 
 @login_router.post("/token", response_model=Token)
