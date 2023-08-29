@@ -1,5 +1,6 @@
 import asyncio
 import os
+from datetime import timedelta
 from typing import Any
 from typing import Generator
 
@@ -14,6 +15,7 @@ from starlette.testclient import TestClient
 import config
 from app import app
 from database.session import get_db
+from security import create_access_token
 
 
 CLEAN_TABLES = ["users"]
@@ -106,3 +108,11 @@ async def create_user_in_db(asyncpg_pool):
             )
 
     return create_user_in_db
+
+
+def create_test_auth_headers(email: str) -> dict:
+    token = create_access_token(
+        data={"sub": email},
+        expires_delta=timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES),
+    )
+    return {"Authorization": f"Bearer {token}"}
