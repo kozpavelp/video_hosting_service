@@ -1,6 +1,8 @@
 import json
 from uuid import uuid4
 
+from tests.conftest import create_test_auth_headers
+
 
 async def test_update_users(client, create_user_in_db, get_user_from_db):
     user_data = {
@@ -19,7 +21,9 @@ async def test_update_users(client, create_user_in_db, get_user_from_db):
     }
     await create_user_in_db(**user_data)
     resp = client.patch(
-        f'/user/?user_id={user_data["user_id"]}', data=json.dumps(updated_user_data)
+        f'/user/?user_id={user_data["user_id"]}',
+        data=json.dumps(updated_user_data),
+        headers=create_test_auth_headers(user_data["email"]),
     )
     assert resp.status_code == 200
     resp_json = resp.json()
@@ -68,7 +72,9 @@ async def test_update_one(client, create_user_in_db, get_user_from_db):
     for user_data in users_to_add:
         await create_user_in_db(**user_data)
     resp = client.patch(
-        f'/user/?user_id={users_to_add[0]["user_id"]}', data=json.dumps(data_to_update)
+        f'/user/?user_id={users_to_add[0]["user_id"]}',
+        data=json.dumps(data_to_update),
+        headers=create_test_auth_headers(user_data["email"]),
     )
     assert resp.status_code == 200
     resp_json = resp.json()
@@ -96,14 +102,27 @@ async def test_update_one(client, create_user_in_db, get_user_from_db):
     assert user_from_db["user_id"] == users_to_add[2]["user_id"]
 
 
-async def test_update_user_not_found(client):
+async def test_update_user_not_found(client, create_user_in_db):
+    user_data = {
+        "user_id": uuid4(),
+        "name": "Pavel",
+        "surname": "Kozl",
+        "email": "kozpavelp@gmail.com",
+        "is_active": True,
+        "password": "TestPwd1",
+    }
     data_to_update = {
         "name": "NoPavel",
         "surname": "NeKozl",
         "email": "new_life@pochta.pe",
     }
     user_uuid = uuid4()
-    resp = client.patch(f"/user/?user_id={user_uuid}", data=json.dumps(data_to_update))
+    await create_user_in_db(**user_data)
+    resp = client.patch(
+        f"/user/?user_id={user_uuid}",
+        data=json.dumps(data_to_update),
+        headers=create_test_auth_headers(user_data["email"]),
+    )
     assert resp.status_code == 404
     assert resp.json() == {"detail": f"User with id:{user_uuid} not found in database."}
 
@@ -131,7 +150,9 @@ async def test_update_user_duplicate_email(client, create_user_in_db):
     for user_data in users_to_add:
         await create_user_in_db(**user_data)
     resp = client.patch(
-        f'/user/?user_id={users_to_add[0]["user_id"]}', data=json.dumps(email_to_update)
+        f'/user/?user_id={users_to_add[0]["user_id"]}',
+        data=json.dumps(email_to_update),
+        headers=create_test_auth_headers(users_to_add[0]["email"]),
     )
     assert resp.status_code == 503
     assert "duplicate key value violates unique constraint" in resp.json()["detail"]

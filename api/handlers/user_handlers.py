@@ -82,7 +82,7 @@ async def update_user(
         )
     try:
         updated_user_id = await _update_user(
-            cleaned_params=cleaned_params, user_id=user_id, db=db
+            cleaned_params=cleaned_params, user_id=user_id, session=db
         )
     except IntegrityError as err:
         logger.error(err)
