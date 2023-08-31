@@ -1,6 +1,7 @@
 """Database models block"""
 import uuid
 
+from sqlalchemy import ARRAY
 from sqlalchemy import Boolean
 from sqlalchemy import Column
 from sqlalchemy import String
@@ -20,3 +21,4 @@ class User(Base):
     email = Column(String, nullable=False, unique=True)
     is_active = Column(Boolean(), default=True)
     hashed_pwd = Column(String, nullable=False)
+    roles = Column(ARRAY(String), nullable=False)

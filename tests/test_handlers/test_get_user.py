@@ -1,5 +1,6 @@
 from uuid import uuid4
 
+from database.dals import RoleList
 from tests.conftest import create_test_auth_headers
 
 
@@ -8,9 +9,10 @@ async def test_get_user(client, create_user_in_db, get_user_from_db):
         "user_id": uuid4(),
         "name": "Pavel",
         "surname": "Kozl",
-        "email": "kozpavelp@gmail.com",
+        "email": "kozpavel8p@gmail.com",
         "is_active": True,
         "password": "TestPwd1",
+        "roles": [RoleList.PORTAL_USER],
     }
     await create_user_in_db(**user_data)
     resp = client.get(
@@ -34,6 +36,7 @@ async def test_get_user_not_found(client, create_user_in_db, get_user_from_db):
         "email": "kozpavelp@gmail.com",
         "is_active": True,
         "password": "TestPwd1",
+        "roles": [RoleList.PORTAL_USER],
     }
     await create_user_in_db(**user_data)
     id_to_find = uuid4()

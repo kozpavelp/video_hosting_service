@@ -1,6 +1,7 @@
 import json
 from uuid import uuid4
 
+from database.dals import RoleList
 from tests.conftest import create_test_auth_headers
 
 
@@ -12,12 +13,14 @@ async def test_update_users(client, create_user_in_db, get_user_from_db):
         "email": "kozpavelp@gmail.com",
         "is_active": True,
         "password": "TestPwd1",
+        "roles": [RoleList.PORTAL_USER],
     }
     updated_user_data = {
         "name": "Jora",
         "surname": "lavash",
         "email": "punk@srenk.com",
         "password": "TestPwd1",
+        "roles": [RoleList.PORTAL_USER],
     }
     await create_user_in_db(**user_data)
     resp = client.patch(
@@ -46,6 +49,7 @@ async def test_update_one(client, create_user_in_db, get_user_from_db):
             "email": "kozpavelp@gmail.com",
             "is_active": True,
             "password": "TestPwd1",
+            "roles": [RoleList.PORTAL_USER],
         },
         {
             "user_id": uuid4(),
@@ -54,6 +58,7 @@ async def test_update_one(client, create_user_in_db, get_user_from_db):
             "email": "Isas@gmail.kz",
             "is_active": True,
             "password": "TestPwd1",
+            "roles": [RoleList.PORTAL_USER],
         },
         {
             "user_id": uuid4(),
@@ -62,6 +67,7 @@ async def test_update_one(client, create_user_in_db, get_user_from_db):
             "email": "ponko@ya.com",
             "is_active": True,
             "password": "TestPwd1",
+            "roles": [RoleList.PORTAL_USER],
         },
     ]
     data_to_update = {
@@ -74,7 +80,7 @@ async def test_update_one(client, create_user_in_db, get_user_from_db):
     resp = client.patch(
         f'/user/?user_id={users_to_add[0]["user_id"]}',
         data=json.dumps(data_to_update),
-        headers=create_test_auth_headers(user_data["email"]),
+        headers=create_test_auth_headers(users_to_add[0]["email"]),
     )
     assert resp.status_code == 200
     resp_json = resp.json()
@@ -110,6 +116,7 @@ async def test_update_user_not_found(client, create_user_in_db):
         "email": "kozpavelp@gmail.com",
         "is_active": True,
         "password": "TestPwd1",
+        "roles": [RoleList.PORTAL_USER],
     }
     data_to_update = {
         "name": "NoPavel",
@@ -136,6 +143,7 @@ async def test_update_user_duplicate_email(client, create_user_in_db):
             "email": "kozpavelp@gmail.com",
             "is_active": True,
             "password": "TestPwd1",
+            "roles": [RoleList.PORTAL_USER],
         },
         {
             "user_id": uuid4(),
@@ -144,6 +152,7 @@ async def test_update_user_duplicate_email(client, create_user_in_db):
             "email": "Isas@gmail.kz",
             "is_active": True,
             "password": "TestPwd1",
+            "roles": [RoleList.PORTAL_USER],
         },
     ]
     email_to_update = {"email": users_to_add[1]["email"]}

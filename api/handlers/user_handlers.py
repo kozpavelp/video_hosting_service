@@ -12,6 +12,7 @@ from api.handlers.actions.user import _create_new_user
 from api.handlers.actions.user import _delete_user
 from api.handlers.actions.user import _get_user_by_id
 from api.handlers.actions.user import _update_user
+from api.handlers.actions.user import check_permissions
 from api.models.models import DeletedUserResp
 from api.models.models import ShowUser
 from api.models.models import UpdatedUserReq
@@ -40,6 +41,16 @@ async def delete_user(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user_from_token),
 ) -> DeletedUserResp:
+    # Check permissions
+    user_to_delete = await _get_user_by_id(user_id, db)
+    if user_to_delete is None:
+        raise HTTPException(
+            status_code=404, detail=f"User with id:{user_id} not found in database."
+        )
+
+    if not check_permissions(target_user=user_to_delete, current_user=current_user):
+        raise HTTPException(status_code=403, detail="Forbidden.")
+
     deleted_user_id = await _delete_user(user_id, db)
     if deleted_user_id is None:
         raise HTTPException(
@@ -69,17 +80,23 @@ async def update_user(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user_from_token),
 ) -> UpdatedUserResp:
+    user = await _get_user_by_id(user_id, db)
     cleaned_params = body.dict(exclude_none=True)
     if cleaned_params == {}:
         raise HTTPException(
             status_code=422,
             detail="Для продолжения должен быть изменен хотябы один параметр",
         )
-    user = await _get_user_by_id(user_id, db)
     if user is None:
         raise HTTPException(
             status_code=404, detail=f"User with id:{user_id} not found in database."
         )
+    # Check permissions
+    user_to_update = await _get_user_by_id(user_id, db)
+    if user_to_update.user_id != current_user.user_id:
+        if not check_permissions(target_user=user_to_update, current_user=current_user):
+            raise HTTPException(status_code=403, detail="Forbidden.")
+
     try:
         updated_user_id = await _update_user(
             cleaned_params=cleaned_params, user_id=user_id, session=db
@@ -87,4 +104,5 @@ async def update_user(
     except IntegrityError as err:
         logger.error(err)
         raise HTTPException(status_code=503, detail=f"Database error: {err}")
+
     return UpdatedUserResp(updated_user_id=updated_user_id)

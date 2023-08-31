@@ -14,6 +14,7 @@ from starlette.testclient import TestClient
 
 import config
 from app import app
+from database.dals import RoleList
 from database.session import get_db
 from security import create_access_token
 
@@ -95,16 +96,18 @@ async def create_user_in_db(asyncpg_pool):
         email: str,
         is_active: bool,
         password: str,
+        roles: list[RoleList],
     ):
         async with asyncpg_pool.acquire() as conn:
             return await conn.execute(
-                "INSERT INTO users VALUES ($1, $2, $3, $4, $5, $6)",
+                "INSERT INTO users VALUES ($1, $2, $3, $4, $5, $6, $7)",
                 user_id,
                 name,
                 surname,
                 email,
                 is_active,
                 password,
+                roles,
             )
 
     return create_user_in_db

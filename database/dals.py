@@ -1,4 +1,5 @@
 """Data Acces Layer"""
+from enum import Enum
 from typing import Union
 from uuid import UUID
 
@@ -10,14 +11,27 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from database.models import User
 
 
+class RoleList(str, Enum):
+    PORTAL_USER = "PORTAL_USER"
+    PORTAL_ADMIN = "PORTAL_ADMIN"
+    PORTAL_SUPERADMIN = "PORTAL_SUPERADMIN"
+
+
 class UserDAL:
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
 
     async def create_user(
-        self, name: str, surname: str, email: str, hashed_pwd: str
+        self,
+        name: str,
+        surname: str,
+        email: str,
+        hashed_pwd: str,
+        roles: list[RoleList],
     ) -> User:
-        new_user = User(name=name, surname=surname, email=email, hashed_pwd=hashed_pwd)
+        new_user = User(
+            name=name, surname=surname, email=email, hashed_pwd=hashed_pwd, roles=roles
+        )
         self.db_session.add(new_user)
         await self.db_session.flush()
         return new_user

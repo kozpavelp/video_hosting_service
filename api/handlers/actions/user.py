@@ -3,8 +3,35 @@ from uuid import UUID
 
 from api.models.models import ShowUser
 from api.models.models import UserCreate
+from database.dals import RoleList
 from database.dals import UserDAL
+from database.models import User
 from hashing import Hasher
+
+
+def check_permissions(target_user: User, current_user: User) -> bool:
+    if target_user.user_id != current_user.user_id:
+        # admin check
+        if not {RoleList.PORTAL_ADMIN, RoleList.PORTAL_SUPERADMIN}.intersection(
+            current_user.roles
+        ):
+            return False
+        # check if admin deactivating superadmin
+        if (
+            RoleList.PORTAL_ADMIN in current_user.roles
+            and RoleList.PORTAL_SUPERADMIN in target_user.roles
+        ):
+            return False
+        # check if admin deactivating admin
+        if (
+            RoleList.PORTAL_ADMIN in current_user.roles
+            and RoleList.PORTAL_ADMIN in target_user.roles
+        ):
+            return False
+    # check if superadmin deactivating self
+    if RoleList.PORTAL_SUPERADMIN in target_user.roles:
+        return False
+    return True
 
 
 async def _create_new_user(body: UserCreate, session) -> ShowUser:
@@ -15,6 +42,7 @@ async def _create_new_user(body: UserCreate, session) -> ShowUser:
             surname=body.surname,
             email=body.email,
             hashed_pwd=Hasher.get_pwd_hash(body.password),
+            roles=[RoleList.PORTAL_USER],
         )
         return ShowUser(
             user_id=user.user_id,
@@ -32,18 +60,12 @@ async def _delete_user(user_id, session) -> Union[UUID, None]:
     return deleted_user_id
 
 
-async def _get_user_by_id(user_id, session) -> Union[ShowUser, None]:
+async def _get_user_by_id(user_id, session) -> Union[User, None]:
     async with session.begin():
         user_dal = UserDAL(session)
         user = await user_dal.get_user_by_id(user_id=user_id)
         if user is not None:
-            return ShowUser(
-                user_id=user.user_id,
-                name=user.name,
-                surname=user.surname,
-                email=user.email,
-                is_active=user.is_active,
-            )
+            return user
 
 
 async def _update_user(
