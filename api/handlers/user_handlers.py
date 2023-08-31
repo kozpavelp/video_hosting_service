@@ -59,7 +59,7 @@ async def delete_user(
     return DeletedUserResp(deleted_user_id=deleted_user_id)
 
 
-@user_router.get("/", response_model=ShowUser)
+@user_router.get("/")  # response_model = ShowUser ???
 async def get_user_by_id(
     user_id: UUID,
     db: AsyncSession = Depends(get_db),

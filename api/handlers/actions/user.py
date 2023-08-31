@@ -1,6 +1,8 @@
 from typing import Union
 from uuid import UUID
 
+from fastapi import HTTPException
+
 from api.models.models import ShowUser
 from api.models.models import UserCreate
 from database.dals import RoleList
@@ -10,6 +12,10 @@ from hashing import Hasher
 
 
 def check_permissions(target_user: User, current_user: User) -> bool:
+    # check if superadmin deactivating self
+    if RoleList.PORTAL_SUPERADMIN in target_user.roles:
+        raise HTTPException(status_code=406, detail="Superadmin can not be deleted")
+
     if target_user.user_id != current_user.user_id:
         # admin check
         if not {RoleList.PORTAL_ADMIN, RoleList.PORTAL_SUPERADMIN}.intersection(
@@ -28,9 +34,7 @@ def check_permissions(target_user: User, current_user: User) -> bool:
             and RoleList.PORTAL_ADMIN in target_user.roles
         ):
             return False
-    # check if superadmin deactivating self
-    if RoleList.PORTAL_SUPERADMIN in target_user.roles:
-        return False
+
     return True
 
 

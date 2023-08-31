@@ -168,3 +168,25 @@ async def test_user_delete_user(client, create_user_in_db, get_user_from_db):
         headers=create_test_auth_headers(user2["email"]),
     )
     assert resp.status_code == 403
+
+
+async def test_reject_delete_superadmin(client, create_user_in_db, get_user_from_db):
+    user_root = {
+        "user_id": uuid4(),
+        "name": "Pavel",
+        "surname": "Kozl",
+        "email": "kozpave2lp1@gmail.com",
+        "is_active": True,
+        "password": "TestPwd1",
+        "roles": [RoleList.PORTAL_SUPERADMIN],
+    }
+    await create_user_in_db(**user_root)
+    resp = client.delete(
+        f'/user/?user_id={user_root["user_id"]}',
+        headers=create_test_auth_headers(user_root["email"]),
+    )
+    assert resp.status_code == 406
+    assert resp.json() == {"detail": "Superadmin can not be deleted"}
+    users_from_database = await get_user_from_db(user_root["user_id"])
+    user_from_database = users_from_database[0]
+    assert RoleList.PORTAL_SUPERADMIN in user_from_database["roles"]
