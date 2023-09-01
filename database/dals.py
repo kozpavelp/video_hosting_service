@@ -1,5 +1,4 @@
 """Data Acces Layer"""
-from enum import Enum
 from typing import Union
 from uuid import UUID
 
@@ -8,13 +7,8 @@ from sqlalchemy import select
 from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from database.models import RoleList
 from database.models import User
-
-
-class RoleList(str, Enum):
-    PORTAL_USER = "PORTAL_USER"
-    PORTAL_ADMIN = "PORTAL_ADMIN"
-    PORTAL_SUPERADMIN = "PORTAL_SUPERADMIN"
 
 
 class UserDAL:

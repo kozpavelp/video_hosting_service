@@ -106,3 +106,75 @@ async def update_user(
         raise HTTPException(status_code=503, detail=f"Database error: {err}")
 
     return UpdatedUserResp(updated_user_id=updated_user_id)
+
+
+@user_router.patch("/admin_role", response_model=UpdatedUserResp)
+async def grant_admin_role(
+    user_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user_from_token),
+):
+    if current_user.user_id == user_id:
+        raise HTTPException(status_code=400, detail="Can not promote yourself")
+
+    if not current_user.is_superadmin:
+        raise HTTPException(status_code=403, detail="Forbidden.")
+
+    target_user = await _get_user_by_id(user_id, db)
+
+    if target_user.is_admin or target_user.is_superadmin:
+        raise HTTPException(
+            status_code=409, detail=f"User with id:{user_id} is already promoted"
+        )
+
+    if target_user is None:
+        raise HTTPException(
+            status_code=404, detail=f"User with id:{user_id} not found in db"
+        )
+
+    data_to_update = {"roles": target_user.add_admin_role()}
+
+    try:
+        updated_user_id = await _update_user(
+            cleaned_params=data_to_update, user_id=user_id, session=db
+        )
+    except IntegrityError as err:
+        logger.error(err)
+        raise HTTPException(status_code=503, detail=f"Database error:{err}")
+    return UpdatedUserResp(updated_user_id=updated_user_id)
+
+
+@user_router.patch("/admin_role", response_model=UpdatedUserResp)
+async def revoke_admin_role(
+    user_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user_from_token),
+):
+    if current_user.user_id == user_id:
+        raise HTTPException(status_code=400, detail="Can not change self roles")
+
+    if not current_user.is_superadmin:
+        raise HTTPException(status_code=403, detail="Forbidden.")
+
+    target_user = await _get_user_by_id(user_id, db)
+
+    if target_user.is_admin or target_user.is_superadmin:
+        raise HTTPException(
+            status_code=409, detail=f"User with id:{user_id} is not admin"
+        )
+
+    if target_user is None:
+        raise HTTPException(
+            status_code=404, detail=f"User with id:{user_id} not found in db"
+        )
+
+    data_to_update = {"roles": target_user.remove_admin_role()}
+
+    try:
+        updated_user_id = await _update_user(
+            cleaned_params=data_to_update, user_id=user_id, session=db
+        )
+    except IntegrityError as err:
+        logger.error(err)
+        raise HTTPException(status_code=503, detail=f"Database error:{err}")
+    return UpdatedUserResp(updated_user_id=updated_user_id)

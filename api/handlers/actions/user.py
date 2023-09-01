@@ -5,8 +5,8 @@ from fastapi import HTTPException
 
 from api.models.models import ShowUser
 from api.models.models import UserCreate
-from database.dals import RoleList
 from database.dals import UserDAL
+from database.models import RoleList
 from database.models import User
 from hashing import Hasher
 

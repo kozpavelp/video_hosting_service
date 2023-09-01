@@ -14,7 +14,7 @@ from starlette.testclient import TestClient
 
 import config
 from app import app
-from database.dals import RoleList
+from database.models import RoleList
 from database.session import get_db
 from security import create_access_token
 

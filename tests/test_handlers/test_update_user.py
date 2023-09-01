@@ -1,7 +1,7 @@
 import json
 from uuid import uuid4
 
-from database.dals import RoleList
+from database.models import RoleList
 from tests.conftest import create_test_auth_headers
 
 
