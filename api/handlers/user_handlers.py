@@ -144,7 +144,7 @@ async def grant_admin_role(
     return UpdatedUserResp(updated_user_id=updated_user_id)
 
 
-@user_router.patch("/admin_role", response_model=UpdatedUserResp)
+@user_router.delete("/admin_role", response_model=UpdatedUserResp)
 async def revoke_admin_role(
     user_id: UUID,
     db: AsyncSession = Depends(get_db),
@@ -158,14 +158,14 @@ async def revoke_admin_role(
 
     target_user = await _get_user_by_id(user_id, db)
 
-    if target_user.is_admin or target_user.is_superadmin:
+    if not target_user.is_admin:
         raise HTTPException(
-            status_code=409, detail=f"User with id:{user_id} is not admin"
+            status_code=409, detail=f"User with id: {user_id} is not admin"
         )
 
     if target_user is None:
         raise HTTPException(
-            status_code=404, detail=f"User with id:{user_id} not found in db"
+            status_code=404, detail=f"User with id: {user_id} not found in db"
         )
 
     data_to_update = {"roles": target_user.remove_admin_role()}
