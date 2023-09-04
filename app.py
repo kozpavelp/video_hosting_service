@@ -4,7 +4,7 @@ from fastapi.routing import APIRouter
 
 from api.handlers.login_handlers import login_router
 from api.handlers.user_handlers import user_router
-
+from api.service import service_router
 
 app = FastAPI(title="lessons")
 
@@ -12,6 +12,7 @@ main_router = APIRouter()
 
 main_router.include_router(user_router, prefix="/user", tags=["user"])
 main_router.include_router(login_router, prefix="/login", tags=["login"])
+main_router.include_router(service_router, tags=["service"])
 app.include_router(main_router)
 
 if __name__ == "__main__":
