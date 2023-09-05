@@ -12,4 +12,4 @@ tests/alembic.ini
 tests/migrations
 tests/test_handlers/alembic.ini
 migrations/
-alembic.ini
+bk/

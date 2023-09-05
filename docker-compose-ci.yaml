@@ -16,7 +16,7 @@ services:
     container_name: video_hosting_app
     image: video_hosting_app # Specify the name of the Docker image to be built
     environment:
-      REAL_DATABASE_URL: "postgresql+asyncpg://postgres:postgres@db:5432/postgres"
+      DB_URL: "postgresql+asyncpg://postgres:postgres@db:5432/postgres"
     build:
       context: .
       dockerfile: Dockerfile
