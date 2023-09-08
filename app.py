@@ -1,10 +1,14 @@
+import sentry_sdk
 import uvicorn
 from fastapi import FastAPI
 from fastapi.routing import APIRouter
 
+import config
 from api.handlers.login_handlers import login_router
 from api.handlers.user_handlers import user_router
 from api.service import service_router
+
+sentry_sdk.init(dsn=config.SENTRY_URL, traces_sample_rate=1.0, profiles_sample_rate=1.0)
 
 app = FastAPI(title="lessons")
 
