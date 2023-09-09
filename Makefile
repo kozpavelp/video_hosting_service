@@ -2,7 +2,13 @@ up:
 	docker-compose up -d
 
 down:
-	docker-compose -f docker-compose.yaml down && docker network prune --force
+	docker-compose -f docker-compose.yaml down && docker down --remove-orphans
 
-run:
+up-ci:
 	docker-compose -f docker-compose-ci.yaml up -d
+
+up-rebuild-ci:
+	docker-compose -f docker-compose-ci.yaml up --build -d
+
+down-ci:
+	docker-compose -f docker-compose-ci.yaml down --remove-orphans

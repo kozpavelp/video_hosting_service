@@ -18,3 +18,5 @@ SECRET_KEY: str = env.str("SECRET_KEY", default="secret_key")
 ALG: str = env.str("ALG", default="HS256")
 
 SENTRY_URL = "https://5a3fb01ba8837fb4b77b347f6df306b7@o4505846124642304.ingest.sentry.io/4505846223732736"
+
+PORT = env.int("PORT")
