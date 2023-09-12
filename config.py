@@ -1,22 +1,33 @@
 """Setting & configs"""
-from envparse import Env
+import os
 
-env = Env()
+from dotenv import load_dotenv
 
-DB_URL = env.str(
-    "DB_URL", default="postgresql+asyncpg://postgres:postgres@0.0.0.0:5432/postgres"
-)
-# ROMOTE IP FOR MIGRATIONS
-# DB_URL = env.str("DB_URL", default="postgresql+asyncpg://postgres:postgres@146.70.149.217:5432/postgres")
-TEST_DB_URL = env.str(
-    "TEST_DB_URL",
-    default="postgresql+asyncpg://postgres_test:postgres_test@0.0.0.0:5433/postgres_test",
-)
+load_dotenv()
 
-ACCESS_TOKEN_EXPIRE_MINUTES: int = env.int("ACCESS_TOKEN_EXPIRE_MINUTES", default=30)
-SECRET_KEY: str = env.str("SECRET_KEY", default="secret_key")
-ALG: str = env.str("ALG", default="HS256")
+DB_HOST = os.environ.get("DB_HOST")
+DB_PORT = os.environ.get("DB_PORT")
+DB_NAME = os.environ.get("DB_NAME")
+DB_USER = os.environ.get("DB_USER")
+DB_PASS = os.environ.get("DB_PASS")
 
-SENTRY_URL = "https://5a3fb01ba8837fb4b77b347f6df306b7@o4505846124642304.ingest.sentry.io/4505846223732736"
+TEST_DB_HOST = os.environ.get("TEST_DB_HOST")
+TEST_DB_PORT = os.environ.get("TEST_DB_PORT")
+TEST_DB_NAME = os.environ.get("TEST_DB_NAME")
+TEST_DB_USER = os.environ.get("TEST_DB_USER")
+TEST_DB_PASS = os.environ.get("TEST_DB_PASS")
 
-PORT = env.int("PORT")
+SENTRY_URL = os.environ.get("SENTRY_URL")
+
+# PORT FOR DOCKER
+PORT: int = int(os.environ.get("PORT"))
+
+
+DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+TEST_DB_URL = f"postgresql+asyncpg://{TEST_DB_USER}:{TEST_DB_PASS}@{TEST_DB_HOST}:{TEST_DB_PORT}/{TEST_DB_NAME}"
+
+# Tokens stuff
+ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
+SECRET_KEY: str = os.environ.get("SECRET_KEY")
+ALG: str = os.environ.get("ALG")
