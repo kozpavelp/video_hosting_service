@@ -6,3 +6,6 @@ api/models/__pycache__/
 database/__pycache__/
 tests/.pytest_cache/
 bk/
+.env
+grafana_storage/
+

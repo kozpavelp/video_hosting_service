@@ -1,0 +1,21 @@
+# You have to make .env file with same vars
+
+DB_HOST=0.0.0.0
+DB_PORT=5432
+DB_NAME=postgres
+DB_USER=postgres
+DB_PASS=postgres
+
+TEST_DB_HOST=localhost
+TEST_DB_PORT=5433
+TEST_DB_NAME=postgres_test
+TEST_DB_USER=postgres_test
+TEST_DB_PASS=postgres_test
+
+SENTRY_URL=https://5a3fb01ba8837fb4b77b347f6df306b7@o4505846124642304.ingest.sentry.io/4505846223732736
+
+PORT=8000
+
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+SECRET_KEY=secret_key
+ALG=HS256
