@@ -1,4 +1,3 @@
-"""Database models block"""
 import uuid
 from enum import Enum
 
@@ -44,3 +43,11 @@ class User(Base):
     def remove_admin_role(self):
         if self.is_admin:
             return {role for role in self.roles if role != RoleList.PORTAL_ADMIN}
+
+
+class Video(Base):
+    __tablename__ = 'video'
+
+    video_id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4())
+    name = Column(String, nullable=False)
+    file_path = Column(String, nullable=False)

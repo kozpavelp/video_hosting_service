@@ -1,4 +1,4 @@
-"""Data Acces Layer"""
+"""Data Access Layer"""
 from typing import Union
 from uuid import UUID
 
@@ -8,7 +8,7 @@ from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from database.models import RoleList
-from database.models import User
+from database.models import User, Video
 
 
 class UserDAL:
@@ -67,3 +67,17 @@ class UserDAL:
         user_row = result.fetchone()
         if user_row is not None:
             return user_row[0]
+
+
+class VideoDAL:
+    def __init__(self, db_session: AsyncSession):
+        self.db_session = db_session
+
+    async def upload_video(self, name: str, file_path: str) -> Video:
+        new_video = Video(
+            name=name,
+            file_path=file_path
+        )
+        self.db_session.add(new_video)
+        await self.db_session.flush()
+        return new_video

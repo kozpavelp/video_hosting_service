@@ -47,6 +47,15 @@ class UserCreate(BaseModel):
         return value
 
 
+class VideoCreate(BaseModel):
+    name: str
+    file_path: str
+
+class ShowVideo(BaseModel):
+    video_id: uuid.UUID
+    name: str
+    file_path: str
+
 class DeletedUserResp(BaseModel):
     deleted_user_id: uuid.UUID
 

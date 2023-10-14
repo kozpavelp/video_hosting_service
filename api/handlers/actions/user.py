@@ -3,8 +3,8 @@ from uuid import UUID
 
 from fastapi import HTTPException
 
-from api.models.models import ShowUser
-from api.models.models import UserCreate
+from api.schemas.schemas import ShowUser
+from api.schemas.schemas import UserCreate
 from database.dals import UserDAL
 from database.models import RoleList
 from database.models import User

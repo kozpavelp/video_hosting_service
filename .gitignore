@@ -2,7 +2,7 @@ venv/
 .idea/
 __pycache__/
 api/handlers/__pycache__/
-api/models/__pycache__/
+api/schemas/__pycache__/
 database/__pycache__/
 tests/.pytest_cache/
 bk/

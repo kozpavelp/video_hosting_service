@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 import config
 from api.handlers.actions.auth import authenticate_user
-from api.models.models import Token
+from api.schemas.schemas import Token
 from database.session import get_db
 from security import create_access_token
 
@@ -33,7 +33,3 @@ async def login_access_token(
     )
     return {"access_token": access_token, "type_token": "bearer"}
 
-
-# @login_router.get("/test_auth_endpoint")
-# async def endpoint_under_jwt(current_user: User = Depends(get_current_user_from_token)):
-#     return {"Success": True, "current_user": current_user}
