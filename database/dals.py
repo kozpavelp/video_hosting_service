@@ -81,3 +81,10 @@ class VideoDAL:
         self.db_session.add(new_video)
         await self.db_session.flush()
         return new_video
+
+    async def get_video_by_id(self, video_id: UUID):
+        query = select(Video).where(Video.video_id == video_id)
+        result = await self.db_session.execute(query)
+        video_row = result.fetchone()
+        if video_row is not None:
+            return video_row[0]
